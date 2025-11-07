@@ -4,7 +4,8 @@
     "checkJs": true,
     "lib": ["es2020", "dom"],
     "types": ["node", "mocha", "chai", "sinon-chai"],
-    "outDir": "build"
+    "outDir": "build",
+    "ignoreDeprecations": "6.0"
   },
   "include": ["lib", "test"]
 }
