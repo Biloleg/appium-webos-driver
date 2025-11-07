@@ -107,50 +107,24 @@ With `skipRemoteControl` enabled, web automation via Chromedriver will work norm
 
 ### Chromedriver Setup
 
-**Option 1: Automatic Download (Recommended)**
+**Automatic Download (Enabled by Default)**
 
-The easiest way to enable automatic Chromedriver downloads is to create an Appium configuration file in your project directory.
+The driver automatically downloads the correct Chromedriver version for your TV's Chrome version. Chromedrivers are stored in `~/.appium/chromedrivers` by default.
 
-**Step 1: Create `.appiumrc.json` in your project directory**
+**No additional configuration needed!** Just start Appium normally:
 
-**For Appium 3.x:**
-```json
-{
-  "server": {
-    "allow-insecure": ["webos:chromedriver_autodownload"]
-  }
-}
-```
-
-**For Appium 2.x:**
-```json
-{
-  "server": {
-    "allow-insecure": ["chromedriver_autodownload"]
-  }
-}
-```
-
-**Step 2: Start Appium**
 ```bash
 appium
 ```
 
-That's it! Appium will automatically download the correct Chromedriver version for your TV's Chrome version and store it in `~/.appium/chromedrivers` by default.
+The driver will:
+1. Detect your TV's Chrome version when you start a session
+2. Download the matching Chromedriver automatically (if not already cached)
+3. Use the downloaded Chromedriver for web automation
 
-**Alternative:** If you prefer not to use a config file, you can pass the flag directly:
+**Optional Configuration:**
 
-**For Appium 3.x:**
-```bash
-appium --allow-insecure=webos:chromedriver_autodownload
-```
-
-**For Appium 2.x:**
-```bash
-appium --allow-insecure chromedriver_autodownload
-```
-
-**Optional:** Customize the storage directory in your capabilities:
+Customize the Chromedriver storage directory in your capabilities:
 
 ```json
 {
@@ -158,9 +132,17 @@ appium --allow-insecure chromedriver_autodownload
 }
 ```
 
-**Option 2: Manual Download**
+Disable automatic download (if you want to manage Chromedriver manually):
 
-If you prefer manual control:
+```json
+{
+  "appium:autodownloadEnabled": false
+}
+```
+
+**Manual Chromedriver Management**
+
+If you prefer to manage Chromedriver manually (set `autodownloadEnabled: false`):
 
 1. Download Chromedriver 2.36 from: https://chromedriver.storage.googleapis.com/index.html?path=2.36/
 2. Place it in an accessible location
@@ -169,25 +151,10 @@ If you prefer manual control:
 
 ```json
 {
-  "appium:chromedriverExecutable": "/path/to/chromedriver"
+  "appium:chromedriverExecutable": "/path/to/chromedriver",
+  "appium:autodownloadEnabled": false
 }
 ```
-
-### Verification
-
-Start Appium server:
-
-**For Appium 3.x:**
-```bash
-appium --allow-insecure=webos:chromedriver_autodownload
-```
-
-**For Appium 2.x:**
-```bash
-appium --allow-insecure chromedriver_autodownload
-```
-
-The driver should be listed in the available drivers. You're now ready to create sessions with the LG WebOS driver!
 
 ## Additional Requirements
 
@@ -213,8 +180,9 @@ The driver should be listed in the available drivers. You're now ready to create
 |`appium:debuggerPort`|[Optional; default `9998`] The port on the device exposed for remote Chromium debugging.|
 | `appium:newCommandTimeout` | How long (in seconds) the driver should wait for a new command from the client before assuming the client has stopped sending requests. After the timeout the session is going to be deleted. `60` seconds by default. Setting it to zero disables the timer.|
 | `appium:showChromedriverLog` 	  | If set to `true` then all the output from chromedriver binary will be forwarded to the Appium server log. `false` by default. |
-|`appium:chromedriverExecutable`|[Optional] Path to a specific Chromedriver executable. Use this if you want to manually specify the Chromedriver binary. For most LG TVs, Chromedriver 2.36 works best. **Note:** Using `chromedriverExecutableDir` with auto-download is recommended instead.|
-| `appium:chromedriverExecutableDir` | [Optional; default `~/.appium/chromedrivers`] Full path to a folder where Chromedriver executables will be stored and auto-downloaded. Appium will automatically download the correct Chromedriver version for your TV's Chrome version. You must also enable auto-download when starting Appium (see Chromedriver Setup section). |
+|`appium:chromedriverExecutable`|[Optional] Path to a specific Chromedriver executable. Use this if you want to manually specify the Chromedriver binary. For most LG TVs, Chromedriver 2.36 works best. **Note:** Set `autodownloadEnabled: false` when using this.|
+| `appium:chromedriverExecutableDir` | [Optional; default `~/.appium/chromedrivers`] Full path to a folder where Chromedriver executables will be stored and auto-downloaded. The driver will automatically download the correct Chromedriver version for your TV's Chrome version. |
+| `appium:autodownloadEnabled` | [Optional; default `true`] Enable or disable automatic Chromedriver download. Set to `false` if you want to manually manage Chromedriver using `chromedriverExecutable`. |
 |`appium:websocketPort`|[Optional; default `3000`] The websocket port on the device exposed for remote control|
 |`appium:websocketPortSecure`|[Optional; default `3001`] The secure websocket port on the device exposed for remote control|
 |`appium:useSecureWebsocket`|[Optional; default `true`] Flag that enables use of `websocketPortSecure` port (wss:// instead of ws://). Modern LG TVs typically require secure WebSocket connections. The driver uses `{rejectUnauthorized: false}` to allow self-signed certificates, so no environment variable setup is needed.|
@@ -239,53 +207,23 @@ If you see an error like:
 Error: Trying to use a chromedriver binary at the path /path/to/chromedriver, but it doesn't exist!
 ```
 
-This means Chromedriver auto-download is not enabled. To fix this:
+**Cause:** This typically happens when upgrading from an older version of the driver where auto-download was not enabled by default.
 
-**Solution 1: Create `.appiumrc.json` file (Recommended)**
+**Solution:**
 
-Create a `.appiumrc.json` file in your project directory:
+The driver now has auto-download **enabled by default**. Simply:
+1. Reinstall the driver to get the latest version
+2. Make sure you don't have `"appium:autodownloadEnabled": false` in your capabilities
+3. Start a new session - Chromedriver will download automatically
 
-**For Appium 3.x:**
-```json
-{
-  "server": {
-    "allow-insecure": ["webos:chromedriver_autodownload"]
-  }
-}
-```
-
-**For Appium 2.x:**
-```json
-{
-  "server": {
-    "allow-insecure": ["chromedriver_autodownload"]
-  }
-}
-```
-
-**Solution 2: Use command-line flag**
-
-Start Appium with the auto-download flag:
-
-**For Appium 3.x:**
-```bash
-appium --allow-insecure=webos:chromedriver_autodownload
-```
-
-**For Appium 2.x:**
-```bash
-appium --allow-insecure chromedriver_autodownload
-```
-
-**Solution 3: Manually download Chromedriver**
-
-If you prefer not to use auto-download:
+If you still see this error, manually download Chromedriver:
 1. Download Chromedriver 2.36 from: https://chromedriver.storage.googleapis.com/index.html?path=2.36/
 2. Make it executable: `chmod +x /path/to/chromedriver`
 3. Add to your capabilities:
 ```json
 {
-  "appium:chromedriverExecutable": "/path/to/chromedriver"
+  "appium:chromedriverExecutable": "/path/to/chromedriver",
+  "appium:autodownloadEnabled": false
 }
 ```
 
