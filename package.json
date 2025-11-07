@@ -86,7 +86,7 @@
     "webdriverio": "7.25.1"
   },
   "peerDependencies": {
-    "appium": "^2.0.0-beta.40"
+    "appium": "^2.0.0 || ^3.0.0"
   },
   "engines": {
     "node": "^16.13.0 || >=18.0.0",
