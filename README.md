@@ -23,11 +23,6 @@ An Appium 2.x and Appium 3.x driver for LG WebOS apps
    export LG_WEBOS_TV_SDK_HOME="/path/to/webOS_TV_SDK"
    ```
 
-5. **Chromedriver**: Download Chromedriver v2.36 (compatible with older Chrome versions on LG TVs):
-   - Download from: https://chromedriver.storage.googleapis.com/index.html?path=2.36/
-   - Place it in an accessible location (e.g., `/usr/local/bin/chromedriver` or a project directory)
-   - Make it executable: `chmod +x /path/to/chromedriver`
-
 ### Driver Installation
 
 **Install directly from GitHub:**
@@ -87,11 +82,109 @@ appium driver install --source=local .
    # Should display your TV information including IP address, webOS version, etc.
    ```
 
+### Emulator Setup
+
+If you're using the webOS TV emulator instead of a physical TV:
+
+1. **Install and launch the webOS emulator** from the [webOS TV SDK](https://webostv.developer.lge.com/develop/tools/sdk-introduction)
+
+2. **Configure the emulator** as a device using webOS CLI tools (same as TV setup above)
+
+3. **Important:** Add `"appium:skipRemoteControl": true` to your capabilities when using the emulator, as emulators don't support WebSocket remote control on ports 3000/3001:
+
+```json
+{
+  "platformName": "LGTV",
+  "appium:automationName": "webOS",
+  "appium:deviceName": "myEmulator",
+  "appium:deviceHost": "127.0.0.1",
+  "appium:appId": "com.example.app",
+  "appium:skipRemoteControl": true
+}
+```
+
+With `skipRemoteControl` enabled, web automation via Chromedriver will work normally, but remote control features (button presses, etc.) will not be available.
+
+### Chromedriver Setup
+
+**Option 1: Automatic Download (Recommended)**
+
+The easiest way to enable automatic Chromedriver downloads is to create an Appium configuration file in your project directory.
+
+**Step 1: Create `.appiumrc.json` in your project directory**
+
+**For Appium 3.x:**
+```json
+{
+  "server": {
+    "allow-insecure": ["webos:chromedriver_autodownload"]
+  }
+}
+```
+
+**For Appium 2.x:**
+```json
+{
+  "server": {
+    "allow-insecure": ["chromedriver_autodownload"]
+  }
+}
+```
+
+**Step 2: Start Appium**
+```bash
+appium
+```
+
+That's it! Appium will automatically download the correct Chromedriver version for your TV's Chrome version and store it in `~/.appium/chromedrivers` by default.
+
+**Alternative:** If you prefer not to use a config file, you can pass the flag directly:
+
+**For Appium 3.x:**
+```bash
+appium --allow-insecure=webos:chromedriver_autodownload
+```
+
+**For Appium 2.x:**
+```bash
+appium --allow-insecure chromedriver_autodownload
+```
+
+**Optional:** Customize the storage directory in your capabilities:
+
+```json
+{
+  "appium:chromedriverExecutableDir": "/path/to/your/chromedrivers"
+}
+```
+
+**Option 2: Manual Download**
+
+If you prefer manual control:
+
+1. Download Chromedriver 2.36 from: https://chromedriver.storage.googleapis.com/index.html?path=2.36/
+2. Place it in an accessible location
+3. Make it executable: `chmod +x /path/to/chromedriver`
+4. Specify the path in capabilities:
+
+```json
+{
+  "appium:chromedriverExecutable": "/path/to/chromedriver"
+}
+```
+
 ### Verification
 
 Start Appium server:
+
+**For Appium 3.x:**
 ```bash
-appium
+appium --allow-insecure=webos:chromedriver_autodownload
+```
+
+**For Appium 2.x:**
+```bash
+appium --allow-insecure chromedriver_autodownload
 ```
 
 The driver should be listed in the available drivers. You're now ready to create sessions with the LG WebOS driver!
@@ -120,11 +213,12 @@ The driver should be listed in the available drivers. You're now ready to create
 |`appium:debuggerPort`|[Optional; default `9998`] The port on the device exposed for remote Chromium debugging.|
 | `appium:newCommandTimeout` | How long (in seconds) the driver should wait for a new command from the client before assuming the client has stopped sending requests. After the timeout the session is going to be deleted. `60` seconds by default. Setting it to zero disables the timer.|
 | `appium:showChromedriverLog` 	  | If set to `true` then all the output from chromedriver binary will be forwarded to the Appium server log. `false` by default. |
-|`appium:chromedriverExecutable`(*)|[Optional] Most LG TVs run a very old version of Chrome. Because this driver uses Chromedriver under the hood, you'll need to have a very old version of Chromedriver handy that works with the version of Chrome backing the apps on your TV. In our testing, we've found Chromedriver 2.36 to work with most TVs. You need to tell the driver where you've installed this version of Chromedriver using the `appium:chromedriverExecutable` capability, passing in an absolute path to the Chromedriver binary.|
-| `appium:chromedriverExecutableDir`(*) | [Optional] Full path to the folder where chromedriver executables are located. This folder is used then to store the downloaded chromedriver executables if automatic download is enabled with `chromedriver_autodownload` security flag. Please read [Automatic Discovery of Compatible Chromedriver in appium-uiautomator2-driver](https://github.com/appium/appium-uiautomator2-driver?tab=readme-ov-file#automatic-discovery-of-compatible-chromedriver) for more details. If the chrome version on the TV is lower than v63 major version, the using chrome version will be `Chrome/63.0.3239.0` forcefully to use chromedriver 2.36 for the session. Lower chromedriver could raise `cannot find Chrome binary` error, which prevent starting chromedriver session. |
+|`appium:chromedriverExecutable`|[Optional] Path to a specific Chromedriver executable. Use this if you want to manually specify the Chromedriver binary. For most LG TVs, Chromedriver 2.36 works best. **Note:** Using `chromedriverExecutableDir` with auto-download is recommended instead.|
+| `appium:chromedriverExecutableDir` | [Optional; default `~/.appium/chromedrivers`] Full path to a folder where Chromedriver executables will be stored and auto-downloaded. Appium will automatically download the correct Chromedriver version for your TV's Chrome version. You must also enable auto-download when starting Appium (see Chromedriver Setup section). |
 |`appium:websocketPort`|[Optional; default `3000`] The websocket port on the device exposed for remote control|
 |`appium:websocketPortSecure`|[Optional; default `3001`] The secure websocket port on the device exposed for remote control|
 |`appium:useSecureWebsocket`|[Optional; default `true`] Flag that enables use of `websocketPortSecure` port (wss:// instead of ws://). Modern LG TVs typically require secure WebSocket connections. The driver uses `{rejectUnauthorized: false}` to allow self-signed certificates, so no environment variable setup is needed.|
+|`appium:skipRemoteControl`|[Optional; default `false`] If set to `true`, skips WebSocket remote control connection. Useful for emulators that don't support WebSocket remote control on ports 3000/3001. All web automation will still work via Chromedriver.|
 |`appium:autoExtendDevMode`|**[Deprecated]** This capability is no longer functional as `ares-extend-dev` command has been removed from the webOS CLI. Developer mode must be managed manually through the [Developer Mode app](https://webostv.developer.lge.com/develop/getting-started/developer-mode-app) on the TV.|
 |`appium:appLaunchParams`|[Optional; default `{}`] A key/value object of app launch param to be passed to `ares-launch`|
 |`appium:appLaunchCooldown`|[Optional; default `3000`] How many ms to wait after triggering app launch to attempt to connect to it via Chromedriver.|
@@ -134,8 +228,70 @@ The driver should be listed in the available drivers. You're now ready to create
 |`appium:rcMode`|[Optional; default `js`; must be `rc` or `js`] When the value is `js`, the `webos: pressKey` command will operate with JS executed via Chromedriver. Otherwise, keys will be sent using the websocket remote control API. Note that when `appium:remoteOnly` is set to true, the value of `appium:rcMode` will always behave as if set to `rc`.|
 |`appium:keyCooldown`|[Optional; default `750`] How long to wait in between remote key presses|
 
-(*) `appium:chromedriverExecutable` or `appium:chromedriverExecutableDir` are required. The chromedriver autodwonload works only when `appium:chromedriverExecutableDir` is provided.
-If both capabilities are given, `appium:chromedriverExecutableDir` will take priority.
+**Note:** The `appium:chromedriverExecutableDir` capability now has a default value of `~/.appium/chromedrivers`, so you only need to specify it if you want to use a different location. If you prefer to manually manage Chromedriver, you can use `appium:chromedriverExecutable` instead.
+
+## Troubleshooting
+
+### Chromedriver binary doesn't exist error
+
+If you see an error like:
+```
+Error: Trying to use a chromedriver binary at the path /path/to/chromedriver, but it doesn't exist!
+```
+
+This means Chromedriver auto-download is not enabled. To fix this:
+
+**Solution 1: Create `.appiumrc.json` file (Recommended)**
+
+Create a `.appiumrc.json` file in your project directory:
+
+**For Appium 3.x:**
+```json
+{
+  "server": {
+    "allow-insecure": ["webos:chromedriver_autodownload"]
+  }
+}
+```
+
+**For Appium 2.x:**
+```json
+{
+  "server": {
+    "allow-insecure": ["chromedriver_autodownload"]
+  }
+}
+```
+
+**Solution 2: Use command-line flag**
+
+Start Appium with the auto-download flag:
+
+**For Appium 3.x:**
+```bash
+appium --allow-insecure=webos:chromedriver_autodownload
+```
+
+**For Appium 2.x:**
+```bash
+appium --allow-insecure chromedriver_autodownload
+```
+
+**Solution 3: Manually download Chromedriver**
+
+If you prefer not to use auto-download:
+1. Download Chromedriver 2.36 from: https://chromedriver.storage.googleapis.com/index.html?path=2.36/
+2. Make it executable: `chmod +x /path/to/chromedriver`
+3. Add to your capabilities:
+```json
+{
+  "appium:chromedriverExecutable": "/path/to/chromedriver"
+}
+```
+
+### WebSocket connection timeout (for emulators)
+
+If you see WebSocket connection errors when using an emulator, add `"appium:skipRemoteControl": true` to your capabilities. See the [Emulator Setup](#emulator-setup) section for details.
 
 ## Supported Commands
 
