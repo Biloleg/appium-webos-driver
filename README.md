@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/appium-lg-webos-driver.svg)](https://npmjs.org/package/appium-lg-webos-driver)
 
-An Appium 2.x driver for LG WebOS apps
+An Appium 2.x and Appium 3.x driver for LG WebOS apps
 
 ## Installation
 
@@ -10,7 +10,7 @@ An Appium 2.x driver for LG WebOS apps
 
 1. **Node.js and npm**: Make sure you have Node.js (v14 or later) and npm installed.
 
-2. **Appium 2.x**: Install Appium globally or in your project:
+2. **Appium 2.x/3.x**: Install Appium globally or in your project:
    ```bash
    npm install -g appium
    ```
@@ -30,17 +30,26 @@ An Appium 2.x driver for LG WebOS apps
 
 ### Driver Installation
 
-Install the driver using Appium's extension CLI:
+**Install directly from GitHub:**
 
 ```bash
-appium driver install --source=local /path/to/appium-lg-webos-driver
+appium driver install --source=git https://github.com/Biloleg/appium-webos-driver.git --package appium-lg-webos-driver
 ```
 
-Or if you want to develop or modify the driver:
+**Or install from local source:**
 
 ```bash
-# Clone or copy the driver to your local machine
-cd /path/to/appium-lg-webos-driver
+appium driver install --source=local .
+```
+
+Run this from inside the cloned repository directory.
+
+**For development:**
+
+```bash
+# Clone the repository
+git clone https://github.com/Biloleg/appium-webos-driver.git
+cd appium-webos-driver
 
 # Install dependencies
 npm install
