@@ -1,0 +1,103 @@
+{
+  "name": "appium-lg-webos-driver",
+  "version": "1.0.1",
+  "description": "LG WebOS support for Appium",
+  "keywords": [
+    "appium",
+    "LG",
+    "WebOS",
+    "testing",
+    "automation"
+  ],
+  "license": "Apache-2.0",
+  "types": "./build/lib/index.d.ts",
+  "main": "index.js",
+  "bin": {},
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "build/lib",
+    "!build/tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "npm run build -- --clean",
+    "dev": "npm run build -- --watch",
+    "fix": "npm run lint -- --fix",
+    "install-driver": "appium driver install --source=local .",
+    "lint": "eslint .",
+    "reinstall": "npm run clean && npm ci",
+    "prepare": "npm run build",
+    "test": "npm run test:unit",
+    "test:e2e": "mocha --timeout 40s --slow 10s \"./test/e2e/**/*.spec.js\"",
+    "test:unit": "mocha --timeout 5s \"./test/unit/**/*.spec.js\""
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "printWidth": 100,
+    "singleQuote": true
+  },
+  "dependencies": {
+    "@humanwhocodes/env": "^2.2.0",
+    "@types/ws": "^8.5.3",
+    "appium-chromedriver": "^6.1.13",
+    "bluebird": "^3.7.2",
+    "env-paths": "2.2.1",
+    "get-port": "^5.1.1",
+    "got": "^11.8.6",
+    "lodash": "^4.17.21",
+    "slugify": "1.6.5",
+    "teen_process": "^1.9.0",
+    "ws": "^8.8.1"
+  },
+  "devDependencies": {
+    "@appium/eslint-config-appium": "^6.0.2",
+    "@appium/tsconfig": "0.2.4",
+    "@appium/types": "0.10.0",
+    "@types/bluebird": "^3.5.36",
+    "@types/chai": "^4.3.1",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/lodash": "^4.14.182",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "18.14.6",
+    "@types/sinon-chai": "^3.2.8",
+    "@types/teen_process": "^1.16.1",
+    "appium": "2.0.0-beta.56",
+    "axios": "^0.27.2",
+    "chai": "^4.3.6",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^7.24.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-mocha": "^9.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "mocha": "10.1.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "2.7.1",
+    "rewiremock": "3.14.3",
+    "rimraf": "^3.0.2",
+    "sinon": "^14.0.0",
+    "sinon-chai": "^3.7.0",
+    "ts-node": "10.9.1",
+    "type-fest": "3.6.0",
+    "typescript": "4.9.5",
+    "webdriverio": "7.25.1"
+  },
+  "peerDependencies": {
+    "appium": "^2.0.0-beta.40"
+  },
+  "engines": {
+    "node": "^16.13.0 || >=18.0.0",
+    "npm": ">=8"
+  },
+  "appium": {
+    "driverName": "webos",
+    "automationName": "webOS",
+    "platformNames": [
+      "LGTV"
+    ],
+    "mainClass": "WebOSDriver"
+  }
+}

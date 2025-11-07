@@ -1,0 +1,10 @@
+{
+  "extends": "@appium/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "checkJs": true,
+    "lib": ["es2020", "dom"],
+    "types": ["node", "mocha", "chai", "sinon-chai"],
+    "outDir": "build"
+  },
+  "include": ["lib", "test"]
+}
