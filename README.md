@@ -158,12 +158,13 @@ If you prefer to manage Chromedriver manually (set `autodownloadEnabled: false`)
 
 ## Additional Requirements
 
-- You must have the [LG webOS SDK](https://webostv.developer.lge.com/develop/tools/sdk-introduction)
-- You must have the `LG_WEBOS_TV_SDK_HOME` env var set as described in the SDK setup guide
+- You must have the [LG webOS SDK](https://webostv.developer.lge.com/develop/tools/sdk-introduction) CLI tools installed and available in your PATH
+  - Install from: https://webostv.developer.lge.com/develop/tools/webos-tv-cli-installation
+  - Please use v`1.12.4` or later
+  - Verify installation by running: `ares-device --version`
 - You must have an LG webOS TV device on the same network as your Appium host, with all ports accessible to the network
 - The TV must be in [Developer Mode](https://webostv.developer.lge.com/develop/getting-started/developer-mode-app) (must have the Dev Mode app and be signed in, with Dev Mode actually turned "On" in the app)
 - You must have your TV device set up and showing as available using the [`ares-setup-device`](https://webostv.developer.lge.com/develop/tools/cli-dev-guide#ares-setup-device) CLI tool
-    - Please use v`1.12.4` or later which is available from https://webostv.developer.lge.com/develop/tools/webos-tv-cli-installation
 - You should be able to run `ares-device -i --device <name>` and have it show the correct details for your connected device
 - The first time you run an Appium session, the driver will attempt to pair itself with the TV as a remote. A permission popup will appear that you need to interact with. You should only need to do this once. If the driver is reinstalled, its permission token cache is removed, or the TV is updated (and potentially even some other circumstances) re-pairing might be necessary.
 
