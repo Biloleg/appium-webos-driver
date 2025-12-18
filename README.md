@@ -260,6 +260,7 @@ list):
 |`pressKey`|`key`, `duration`|Press a remote key for `duration` milliseconds (defaults to 100). The value of `key` must be one of the values listed below|
 |`listApps`| |Return the list of installed applications. The `id` key in each value is `appium:appId`. |
 |`activeAppInfo`| |Return current foreground application information.|
+|`activateApp`|`appPackage`, `launchParams`|Activate (launch) an installed application. `appPackage` is required (the app ID); `launchParams` is optional.|
 
 Example of using a webOS command (in the WebdriverIO JS client):
 
@@ -354,6 +355,28 @@ Response example:
 # Ruby
 driver.execute_script "webos: activeAppInfo"
 #=> {"returnValue"=>true, "appId"=>"com.your.app", "processId"=>"", "windowId"=>""}
+```
+
+#### webos: activateApp
+
+Launch an installed application. The `appPackage` parameter is required.
+
+Example:
+
+```js
+// JavaScript (WebdriverIO)
+await driver.executeScript('webos: activateApp', [{appPackage: 'com.webos.app.netflix'}]);
+```
+
+```ruby
+# Ruby
+driver.execute_script "webos: activateApp", [{appPackage: 'com.webos.app.netflix'}]
+```
+
+With optional launch parameters:
+
+```js
+await driver.executeScript('webos: activateApp', [{appPackage: 'com.webos.app.netflix', launchParams: {uri: 'netflix://deep-link'}}]);
 ```
 
 ## Development
