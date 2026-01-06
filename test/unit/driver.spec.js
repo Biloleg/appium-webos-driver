@@ -31,6 +31,11 @@ describe('WebOSDriver', () => {
       expect(WebOSDriver.executeMethodMap['webos: getElementInfo'].command).to.equal('getElementInfo');
       expect(WebOSDriver.executeMethodMap['webos: getElementInfo'].params.required).to.include('elementId');
     });
+
+    it('should have getFocusedElement command', () => {
+      expect(WebOSDriver.executeMethodMap).to.have.property('webos: getFocusedElement');
+      expect(WebOSDriver.executeMethodMap['webos: getFocusedElement'].command).to.equal('getFocusedElement');
+    });
   });
 
   describe('isExecuteScript', () => {
@@ -40,6 +45,7 @@ describe('WebOSDriver', () => {
       expect(WebOSDriver.isExecuteScript('webos: activeAppInfo')).to.be.true;
       expect(WebOSDriver.isExecuteScript('webos: activateApp')).to.be.true;
       expect(WebOSDriver.isExecuteScript('webos: getElementInfo')).to.be.true;
+      expect(WebOSDriver.isExecuteScript('webos: getFocusedElement')).to.be.true;
     });
 
     it('should not identify invalid script names', () => {

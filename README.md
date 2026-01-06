@@ -261,6 +261,7 @@ list):
 |`listApps`| |Return the list of installed applications. The `id` key in each value is `appium:appId`. |
 |`activeAppInfo`| |Return current foreground application information.|
 |`activateApp`|`appPackage`, `launchParams`|Activate (launch) an installed application. `appPackage` is required (the app ID); `launchParams` is optional.|
+|`getFocusedElement`| |Return information about the currently focused element, including its position, size, and text content. All elements also get a synthetic `@focused` attribute (true/false).|
 
 Example of using a webOS command (in the WebdriverIO JS client):
 
@@ -377,6 +378,32 @@ With optional launch parameters:
 
 ```js
 await driver.executeScript('webos: activateApp', [{appPackage: 'com.webos.app.netflix', launchParams: {uri: 'netflix://deep-link'}}]);
+```
+
+#### webos: getFocusedElement
+
+Get information about the currently focused element. All elements automatically have a synthetic `@focused` attribute (true for the focused element, false for others).
+
+Example:
+
+```js
+// JavaScript (WebdriverIO)
+const focusedInfo = await driver.executeScript('webos: getFocusedElement');
+console.log(focusedInfo);
+// Output: {tag: 'BUTTON', text: 'OK', x: 100, y: 200, width: 80, height: 40, bounds: '[100,200][180,240]', displayed: true, enabled: true, focused: true}
+```
+
+```ruby
+# Ruby
+focused = driver.execute_script "webos: getFocusedElement"
+puts "Focused element: #{focused[:tag]} - #{focused[:text]}"
+```
+
+You can also query for focused elements using XPath with the synthetic `@focused` attribute:
+
+```js
+// Find the focused button
+const focusedButton = await driver.findElement('xpath', "//*[@tag='BUTTON'][@focused='true']");
 ```
 
 ## Development
